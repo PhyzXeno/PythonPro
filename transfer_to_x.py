@@ -16,13 +16,15 @@ def x_encode(str):
 		the_x_str = the_x_str + sys.argv[1][count:count+2] + r"\x"
 		count += 2
 		if count == the_str_len:
-			return(the_x_str[:-2])
+			return(the_x_str[:-2].decode("string_escape"))  # this will convert raw string into normal string
 
-CODE = x_encode(the_str).decode("string_escape")  # this will convert raw string into normal string 
-# CODE = "\x89\xe5"
-# print(type(CODE))
+def x_disassem(str):
+	CODE = str
+	# CODE = "\x89\xe5"
+	# print(type(CODE))
+	md = Cs(CS_ARCH_X86, CS_MODE_64)
+	for i in md.disasm(CODE, 0x1000):
+		print "0x%x:\t%s\t%s" %(i.address, i.mnemonic, i.op_str)
 
-md = Cs(CS_ARCH_X86, CS_MODE_64)
+x_disassem(x_encode(the_str))
 
-for i in md.disasm(CODE, 0x1000):
-	print "0x%x:\t%s\t%s" %(i.address, i.mnemonic, i.op_str)
